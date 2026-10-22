@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>StudyMate – Smart Student Notes & Printing Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#102A43;--blue:#2878C8;--light:#EAF4FC;--bg:#FFFFFF;--text:#263238;--card:#FFFFFF;--line:#D6E4F0;--muted:#51636f;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--navy:#EAF4FC;--blue:#6CAEEF;--light:#16324D;--bg:#0C1B2A;--text:#E3ECF3;--card:#122539;--line:#25435F;--muted:#9FB3C3}}
+:root[data-theme="dark"]{--navy:#EAF4FC;--blue:#6CAEEF;--light:#16324D;--bg:#0C1B2A;--text:#E3ECF3;--card:#122539;--line:#25435F;--muted:#9FB3C3}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 Inter,"Open Sans",system-ui,sans-serif}
+h1,h2,h3{font-family:Poppins,Inter,system-ui,sans-serif;color:var(--navy);line-height:1.2;margin:0 0 .5em}
+h1{font-size:clamp(2rem,6vw,3.4rem)}h2{font-size:clamp(1.5rem,4vw,2.1rem)}h3{font-size:1.1rem}
+a{color:var(--blue)}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+header{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);border-bottom:1px solid var(--line);z-index:20}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:64px}
+.logo{font:700 1.3rem Poppins,sans-serif;color:var(--navy);text-decoration:none}
+.logo span{color:var(--blue)}
+nav ul{display:flex;gap:4px;list-style:none;margin:0;padding:0}
+nav a{display:block;padding:8px 12px;border-radius:8px;text-decoration:none;color:var(--text);font-weight:500;font-size:.95rem}
+nav a.on,nav a:hover{background:var(--light);color:var(--blue)}
+.btn{display:inline-block;border:0;border-radius:10px;padding:13px 22px;font:600 1rem Inter,sans-serif;text-decoration:none;cursor:pointer;background:var(--blue);color:#fff;min-height:48px}
+.btn.alt{background:transparent;color:var(--blue);border:2px solid var(--blue)}
+.btn.wa{background:#1c8c4e}
+.btn:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.menu{display:none;background:var(--light);color:var(--navy);border:0;border-radius:8px;padding:10px 14px;font:600 .95rem Inter;min-height:44px}
+.cta-nav{margin-left:8px}
+@media(max-width:860px){.menu{display:block}nav{display:none;position:absolute;left:0;right:0;top:100%;background:var(--bg);border-bottom:1px solid var(--line);padding:8px 20px 16px}nav.open{display:block}nav ul{flex-direction:column}.cta-nav{display:none}}
+.page{display:none}.page.on{display:block}
+section{padding:56px 0}
+.hero{background:var(--light);padding:72px 0}
+.hero p{font-size:1.15rem;max-width:560px;color:var(--muted)}
+.row{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+.grid{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px}
+.card p{margin:0 0 12px;color:var(--muted)}
+.price{font-weight:600;color:var(--blue)}
+.step{font:700 1.6rem Poppins;color:var(--blue)}
+table{width:100%;border-collapse:collapse;min-width:520px}
+th,td{text-align:left;padding:12px;border-bottom:1px solid var(--line)}
+th{color:var(--navy)}
+.scroll{overflow-x:auto}
+.note{background:var(--light);border-radius:12px;padding:14px 18px;font-size:.95rem}
+label{display:block;font-weight:600;margin:14px 0 4px;font-size:.95rem}
+input,select,textarea{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;font:inherit;background:var(--card);color:var(--text);min-height:46px}
+.two{display:grid;gap:0 16px;grid-template-columns:1fr 1fr}
+@media(max-width:640px){.two{grid-template-columns:1fr}}
+.err{color:#c62828;font-size:.88rem;min-height:1.2em;margin:2px 0 0}
+.file-info{display:flex;gap:10px;align-items:center;margin-top:6px;font-size:.9rem}
+.file-info button{background:none;border:0;color:var(--blue);text-decoration:underline;cursor:pointer;font:inherit}
+.summary{position:sticky;top:90px;align-self:start}
+.layout{display:grid;gap:28px;grid-template-columns:1.5fr 1fr}
+@media(max-width:860px){.layout{grid-template-columns:1fr}.summary{position:static}}
+.total{font:700 2rem Poppins;color:var(--blue)}
+.ok{background:#e6f4ea;color:#14532d;border-radius:12px;padding:16px;margin-top:16px}
+footer{background:var(--navy);color:var(--bg);padding:40px 0;margin-top:20px}
+footer a{color:var(--bg)}footer h3{color:var(--bg)}
+footer .grid{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+footer ul{list-style:none;padding:0;margin:0}
+.fine{font-size:.85rem;opacity:.85;margin-top:20px}
+</style>
+</head>
+<body>
+<header><div class="wrap bar">
+<a class="logo" href="#home">Study<span>Mate</span></a>
+<button class="menu" id="menuBtn" aria-expanded="false" aria-controls="nav">Menu</button>
+<nav id="nav" aria-label="Main"><ul>
+<li><a href="#home" data-p="home">Home</a></li>
+<li><a href="#services" data-p="services">Services &amp; Pricing</a></li>
+<li><a href="#order" data-p="order">Place an Order</a></li>
+<li><a href="#materials" data-p="materials">Study Materials</a></li>
+<li><a href="#about" data-p="about">About Us</a></li>
+<li><a href="#contact" data-p="contact">Contact</a></li>
+</ul></nav>
+<a class="btn cta-nav" href="#order">Order Prints</a>
+</div></header>
+
+<main>
+<div class="page" id="p-home">
+<div class="hero"><div class="wrap">
+<h1>Print Smart. Study Better.</h1>
+<p>Your one-stop hub for notes, assignments, printing and project reports.</p>
+<div class="row"><a class="btn" href="#order">Order Prints</a><a class="btn alt" href="#services">Explore Services</a></div>
+</div></div>
+<section><div class="wrap"><h2>Our popular services</h2>
+<div class="grid">
+<div class="card"><h3>Notes &amp; Assignments</h3><p>Print your study material.</p><a href="#order">Order now</a></div>
+<div class="card"><h3>Spiral Binding</h3><p>Submission-ready reports.</p><a href="#order">Order now</a></div>
+<div class="card"><h3>Project Reports</h3><p>Formatting and printing.</p><a href="#order">Order now</a></div>
+<div class="card"><h3>Study Materials</h3><p>Revision resources.</p><a href="#materials">Browse</a></div>
+</div></div></section>
+<section style="padding-top:0"><div class="wrap"><h2>Why choose StudyMate?</h2>
+<div class="grid">
+<div class="card"><h3>Student-friendly pricing</h3><p>Affordable rates made for student budgets.</p></div>
+<div class="card"><h3>Easy order enquiries</h3><p>Choose options online and send your order.</p></div>
+<div class="card"><h3>Printing and binding together</h3><p>Everything in one place.</p></div>
+<div class="card"><h3>Help in deadline weeks</h3><p>Helpful service during assignment and exam periods.</p></div>
+</div></div></section>
+<section style="padding-top:0"><div class="wrap"><h2>How it works</h2>
+<div class="grid">
+<div class="card"><div class="step">1</div><h3>Upload your file</h3><p>Choose the document you need printed.</p></div>
+<div class="card"><div class="step">2</div><h3>Confirm your order</h3><p>Select printing options and receive a price confirmation.</p></div>
+<div class="card"><div class="step">3</div><h3>Collect your prints</h3><p>Collect your completed order, or use delivery if available.</p></div>
+</div></div></section>
+</div>
+
+<div class="page" id="p-services"><section><div class="wrap">
+<h1>Services &amp; Pricing</h1>
+<p class="note">Prices below are sample estimates, not confirmed business prices. Final prices depend on page count, paper size, colour, binding, and other requirements. Your order will be confirmed before processing.</p>
+<div class="scroll" style="margin:24px 0"><table>
+<tr><th>Service</th><th>Description</th><th>Example price</th><th></th></tr>
+<tr><td>Black-and-white printing</td><td>Notes, assignments and documents</td><td class="price">₹2/page</td><td><a href="#order">Order Now</a></td></tr>
+<tr><td>Colour printing</td><td>Charts, diagrams and selected pages</td><td class="price">₹10/page</td><td><a href="#order">Order Now</a></td></tr>
+<tr><td>Spiral binding</td><td>Binding for reports and assignments</td><td class="price">From ₹40</td><td><a href="#order">Order Now</a></td></tr>
+<tr><td>Project report printing</td><td>Printing and basic formatting</td><td class="price">Quotation required</td><td><a href="#contact">Ask for a quote</a></td></tr>
+<tr><td>Study notes</td><td>Authorized printed study resources</td><td class="price">Depends on material</td><td><a href="#materials">View</a></td></tr>
+<tr><td>Previous-year papers</td><td>Printed papers where legally available</td><td class="price">Depends on pages</td><td><a href="#contact">Enquire</a></td></tr>
+</table></div>
+<a class="btn" href="#order">Order Prints</a>
+</div></section></div>
+
+<div class="page" id="p-order"><section><div class="wrap">
+<h1>Place an Order</h1>
+<p class="note">This site has no order database yet. When you submit, your order details open as a WhatsApp message to StudyMate. Attach your file in that chat. Prices are estimates until confirmed.</p>
+<div class="layout" style="margin-top:20px">
+<form id="orderForm" novalidate>
+<div class="two">
+<div><label for="name">Customer name *</label><input id="name" autocomplete="name"><p class="err" id="e-name"></p></div>
+<div><label for="phone">Phone number *</label><input id="phone" type="tel" autocomplete="tel"><p class="err" id="e-phone"></p></div>
+</div>
+<label for="email">Email (optional)</label><input id="email" type="email" autocomplete="email"><p class="err" id="e-email"></p>
+<label for="file">Document</label><input id="file" type="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.jpg,.jpeg,.png">
+<div class="file-info" id="fileInfo"></div><p class="err" id="e-file"></p>
+<div class="two">
+<div><label for="color">Printing type</label><select id="color"><option value="bw">Black-and-white</option><option value="col">Colour</option></select></div>
+<div><label for="paper">Paper size</label><select id="paper"><option>A4</option><option>A3 (quote needed)</option><option>Other (quote needed)</option></select></div>
+<div><label for="pages">Pages in document *</label><input id="pages" type="number" min="1" max="2000" value="10"><p class="err" id="e-pages"></p></div>
+<div><label for="copies">Number of copies *</label><input id="copies" type="number" min="1" max="500" value="1"><p class="err" id="e-copies"></p></div>
+<div><label for="range">Page range</label><select id="range"><option>All pages</option><option>Selected pages</option></select></div>
+<div><label for="rangeTxt">Selected pages (e.g. 1-5, 8)</label><input id="rangeTxt" disabled></div>
+<div><label for="sides">Printing sides</label><select id="sides"><option value="s">Single-sided</option><option value="d">Double-sided</option></select></div>
+<div><label for="bind">Binding</label><select id="bind"><option value="0">None</option><option value="40">Spiral</option><option value="0">Other (quote needed)</option></select></div>
+</div>
+<label for="collect">Collection method</label><select id="collect"><option>Shop pickup</option><option>Delivery (if available)</option></select>
+<label for="notes">Additional instructions</label><textarea id="notes" rows="3"></textarea>
+<div class="row"><button class="btn wa" type="submit">Send order on WhatsApp</button></div>
+<p class="err" id="e-form" role="alert"></p>
+</form>
+<aside class="card summary" aria-live="polite">
+<h3>Estimate</h3>
+<div class="total" id="total">₹0</div>
+<p id="breakdown"></p>
+<p style="font-size:.85rem">Estimate only. Sample rates (₹2 B&amp;W, ₹10 colour, ₹40 spiral). Double-sided is counted per printed sheet side, so charges stay per page. The final quote may differ.</p>
+</aside>
+</div></div></section></div>
+
+<div class="page" id="p-materials"><section><div class="wrap">
+<h1>Study Materials</h1>
+<p>Browse notes and revision resources by subject and semester.</p>
+<div class="row" style="margin:0 0 20px"><div style="flex:1;min-width:200px"><label for="q">Search</label><input id="q" type="search" placeholder="Search by subject"></div>
+<div style="min-width:160px"><label for="sem">Semester</label><select id="sem"><option value="">All</option><option>1</option><option>2</option><option>3</option><option>4</option></select></div></div>
+<div id="matList" class="grid"></div>
+<p class="note" style="margin-top:20px">No materials are listed yet. We will only list material we are authorized to distribute. Need something specific? <a href="#contact">Contact us</a>.</p>
+</div></section></div>
+
+<div class="page" id="p-about"><section><div class="wrap" style="max-width:760px">
+<h1>About StudyMate</h1>
+<p>StudyMate is a student-focused printing and academic support service created to make everyday academic tasks easier. Students often need notes, assignment printouts, project reports, and binding services within short deadlines. StudyMate aims to bring these services together in one convenient place.</p>
+<h2>Our mission</h2><p>To provide affordable, reliable, and convenient academic printing services.</p>
+<h2>Our vision</h2><p>To become a trusted student support brand that combines physical printing services with simple digital ordering.</p>
+</div></section></div>
+
+<div class="page" id="p-contact"><section><div class="wrap">
+<h1>Contact Us</h1>
+<div class="layout">
+<form id="contactForm" novalidate>
+<label for="cn">Full name *</label><input id="cn"><p class="err" id="e-cn"></p>
+<label for="cc">Email address or phone number *</label><input id="cc"><p class="err" id="e-cc"></p>
+<label for="cs">Subject</label><input id="cs">
+<label for="cm">Message *</label><textarea id="cm" rows="5"></textarea><p class="err" id="e-cm"></p>
+<div class="row"><button class="btn wa" type="submit">Send message on WhatsApp</button></div>
+</form>
+<div class="card"><h3>Reach us</h3>
+<p>Phone: [your phone number]<br>Email: [your business email]<br>Hours: [opening hours]<br>Address: [shop address, if applicable]</p>
+<a class="btn wa" id="waBtn" href="#">Chat on WhatsApp</a>
+<p style="margin-top:14px">Social: [Instagram] · [Facebook]</p></div>
+</div></div></section></div>
+
+<div class="page" id="p-privacy"><section><div class="wrap" style="max-width:760px">
+<h1>Privacy &amp; Terms</h1>
+<p><b>How we use your data.</b> Your name, contact details and documents are used only to process your print order or answer your enquiry.</p>
+<p><b>Files.</b> We accept supported file types within sensible size limits, restrict access to authorized staff, and delete files once they are no longer needed. We never publish student files or personal details.</p>
+<p><b>Prices.</b> Prices on this site are estimates until confirmed by StudyMate. Orders are confirmed before processing.</p>
+<p><b>Materials.</b> We distribute only study materials we are authorized to share.</p>
+<p class="note">Draft text: review and update it to match the tools you actually use before publishing.</p>
+</div></section></div>
+</main>
+
+<footer><div class="wrap"><div class="grid">
+<div><div class="logo" style="color:var(--bg)">StudyMate</div><p>Your Academic Work, Made Easy.</p><p>Affordable printing, binding and project report services for students.</p></div>
+<div><h3>Quick links</h3><ul><li><a href="#home">Home</a></li><li><a href="#services">Services &amp; Pricing</a></li><li><a href="#order">Place an Order</a></li><li><a href="#materials">Study Materials</a></li><li><a href="#about">About Us</a></li><li><a href="#contact">Contact</a></li></ul></div>
+<div><h3>Contact</h3><p>[phone] · [email]<br>[Instagram] · [Facebook]</p><ul><li><a href="#privacy">Privacy policy</a></li><li><a href="#privacy">Terms and conditions</a></li></ul></div>
+</div><p class="fine">© 2026 StudyMate. All rights reserved.</p></div></footer>
+
+<script>
+// Replace with the real number, country code first, digits only (e.g. 919876543210)
+var WA_NUMBER="";
+var pages=["home","services","order","materials","about","contact","privacy"];
+function waLink(t){return WA_NUMBER?"https://wa.me/"+WA_NUMBER+"?text="+encodeURIComponent(t):"https://wa.me/?text="+encodeURIComponent(t)}
+function show(){
+  var h=(location.hash||"#home").slice(1);if(pages.indexOf(h)<0)h="home";
+  pages.forEach(function(p){document.getElementById("p-"+p).classList.toggle("on",p===h)});
+  document.querySelectorAll("nav a").forEach(function(a){a.classList.toggle("on",a.dataset.p===h)});
+  document.getElementById("nav").classList.remove("open");
+  document.getElementById("menuBtn").setAttribute("aria-expanded","false");
+  window.scrollTo(0,0);
+}
+window.addEventListener("hashchange",show);show();
+document.getElementById("menuBtn").onclick=function(){var n=document.getElementById("nav");var o=n.classList.toggle("open");this.setAttribute("aria-expanded",o)};
+var $=function(i){return document.getElementById(i)};
+document.getElementById("waBtn").href=waLink("Hi StudyMate, I have an enquiry.");
+
+// Estimate
+function estimate(){
+  var pages_=+$("pages").value||0,copies=+$("copies").value||0;
+  var rate=$("color").value==="col"?10:2,bind=+$("bind").value||0;
+  var print=pages_*copies*rate,bindTotal=$("bind").selectedIndex===1?bind*copies:0;
+  $("total").textContent="₹"+(print+bindTotal);
+  $("breakdown").textContent=pages_+" pages × "+copies+" copies × ₹"+rate+" = ₹"+print+(bindTotal?" + binding ₹"+bindTotal:"");
+}
+["pages","copies","color","bind","sides","paper"].forEach(function(i){$(i).addEventListener("input",estimate)});
+$("range").onchange=function(){$("rangeTxt").disabled=this.value!=="Selected pages"};
+estimate();
+
+// File handling
+var MAX=25*1024*1024,okExt=["pdf","doc","docx","ppt","pptx","jpg","jpeg","png"],chosen=null;
+function clearFile(){$("file").value="";chosen=null;$("fileInfo").innerHTML="";$("e-file").textContent=""}
+$("file").onchange=function(){
+  var f=this.files[0];$("e-file").textContent="";$("fileInfo").innerHTML="";chosen=null;if(!f)return;
+  var ext=f.name.split(".").pop().toLowerCase();
+  if(okExt.indexOf(ext)<0){$("e-file").textContent="Unsupported file type. Use PDF, Word, PowerPoint, JPG or PNG.";this.value="";return}
+  if(f.size===0){$("e-file").textContent="This file is empty. Choose another file.";this.value="";return}
+  if(f.size>MAX){$("e-file").textContent="File is larger than 25 MB. Compress it or send it in WhatsApp.";this.value="";return}
+  chosen=f;
+  $("fileInfo").innerHTML="<span></span><button type='button'>Remove</button>";
+  $("fileInfo").firstChild.textContent=f.name+" ("+Math.round(f.size/1024)+" KB)";
+  $("fileInfo").lastChild.onclick=clearFile;
+};
+
+// Order submit -> WhatsApp (truthful: opens chat, does not place an order)
+$("orderForm").onsubmit=function(e){
+  e.preventDefault();var bad=false;
+  function chk(id,cond,msg){$("e-"+id).textContent=cond?"":msg;if(!cond)bad=true}
+  chk("name",$("name").value.trim().length>1,"Enter your name.");
+  chk("phone",/^[+\d][\d\s-]{7,14}$/.test($("phone").value.trim()),"Enter a valid phone number.");
+  chk("email",!$("email").value||/^\S+@\S+\.\S+$/.test($("email").value),"Enter a valid email or leave it blank.");
+  chk("pages",+$("pages").value>=1,"Enter at least 1 page.");
+  chk("copies",+$("copies").value>=1,"Enter at least 1 copy.");
+  if(bad){$("e-form").textContent="Fix the highlighted fields and try again.";return}
+  $("e-form").textContent="";
+  var t="StudyMate order enquiry\nName: "+$("name").value+"\nPhone: "+$("phone").value+
+  ($("email").value?"\nEmail: "+$("email").value:"")+"\nFile: "+(chosen?chosen.name+" (I will attach it here)":"to be sent in chat")+
+  "\nType: "+$("color").options[$("color").selectedIndex].text+"\nPaper: "+$("paper").value+
+  "\nPages: "+$("pages").value+" ("+$("range").value+($("range").value==="Selected pages"?": "+$("rangeTxt").value:"")+")"+
+  "\nCopies: "+$("copies").value+"\nSides: "+$("sides").options[$("sides").selectedIndex].text+
+  "\nBinding: "+$("bind").options[$("bind").selectedIndex].text+"\nCollection: "+$("collect").value+
+  "\nNotes: "+($("notes").value||"-")+"\nEstimate: "+$("total").textContent+" (to be confirmed)";
+  window.open(waLink(t),"_blank","noopener");
+};
+$("contactForm").onsubmit=function(e){
+  e.preventDefault();var bad=false;
+  function chk(id,c,m){$("e-"+id).textContent=c?"":m;if(!c)bad=true}
+  chk("cn",$("cn").value.trim().length>1,"Enter your name.");
+  chk("cc",$("cc").value.trim().length>4,"Enter an email address or phone number.");
+  chk("cm",$("cm").value.trim().length>4,"Write a short message.");
+  if(bad)return;
+  window.open(waLink("Contact from "+$("cn").value+" ("+$("cc").value+")\nSubject: "+($("cs").value||"-")+"\n"+$("cm").value),"_blank","noopener");
+};
+
+// Study materials (empty until real, authorized items are added)
+var MATERIALS=[]; // {title, subject, sem, price, link}
+function renderMat(){
+  var q=$("q").value.toLowerCase(),s=$("sem").value;
+  var r=MATERIALS.filter(function(m){return(!s||m.sem==s)&&(m.title+m.subject).toLowerCase().indexOf(q)>-1});
+  $("matList").innerHTML=r.length?"":"<p>No materials listed yet.</p>";
+  r.forEach(function(m){var d=document.createElement("div");d.className="card";d.innerHTML="<h3></h3><p></p>";d.firstChild.textContent=m.title;d.lastChild.textContent=m.subject+" · Sem "+m.sem+" · "+m.price;$("matList").appendChild(d)});
+}
+$("q").oninput=renderMat;$("sem").onchange=renderMat;renderMat();
+</script>
+</body>
+</html>
